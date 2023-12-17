@@ -2,6 +2,5 @@
 #docker run -p 8080:8080 freetar
 
 mkdir -p data
-docker compose build
-sleep 1
-docker compose up
+docker-compose  -f deployment/dev.yml build
+docker-compose  -f deployment/dev.yml up
