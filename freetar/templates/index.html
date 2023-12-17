@@ -1,23 +1,24 @@
 {% extends "base.html" %}
 
-
 {% block content %}
-
-<form class="row search-bar" method="GET" action="/search">
-    <div class="col-md-9">
-        <label for="search_term" class="visually-hidden">Search</label>
-        <input name="search_term" type="text" class="form-control" id="search_term" value="{{ search_term or '' }}"
-            placeholder="Search">
-    </div>
-
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary">Search</button>
-        <button type="button" class="btn btn-primary" onclick="$('#search_term').val('')">Clear</button>
-    </div>
-</form>
-
 {% if search_results is defined or favs is defined and favs %}
-<table id="results" class="table" data-favs="{{ favs }}" data-search="{{ search_results }}">
+
+    {% if search_results is defined %}
+    <form class="row search-bar" method="GET" action="/search">
+        <div class="col-md-9">
+            <label for="search_term" class="visually-hidden">Search in Ultimate guitar</label>
+            <input name="search_term" type="text" class="form-control" id="search_term" value="{{ search_term or '' }}"
+                placeholder="Search">
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary" onclick="$('#search_term').val('')">Clear</button>
+        </div>
+    </form>
+    {% endif %}
+
+<table id="results" class="table" data-favs="{{ favs }}" data-search="{{ (search_results is not undefined) }}">
     <thead>
         <tr>
             <th class="col artist order" scope="artist">artist</th>
@@ -25,7 +26,7 @@
             <th class="col rating order" scope="rating">rating</th>
             <th class="col type order" scope="type">type</th>
             <th class="col favorite" scope="favorite">favorite</th>
-            <th class="col added order" scope="favorite">added</th>
+            <th class="col added order" scope="added">added</th>
         </tr>
     </thead>
     <tbody>
@@ -45,43 +46,44 @@
 {% endif %}
 
 {% if tab is defined %}
-    <a class="view-ug" href="{{ tab.tab_url }}">View on Ultimate Guitar</a><br>
-    {{ tab.artist_name }} - {{ tab.song_name }} (ver {{tab.version }})<br>
-    {% if tab.tuning %}
-        Tuning: {{ tab.tuning }}<br>
+
+    <i class="fa fa--regular fa-star favorite"></i>
+
+    <strong>{{ tab.artist_name }} - {{ tab.song_name }}</strong> <a class="view-ug" href="{{ tab.tab_url }}">UG</a><br/>
+    {% if tab.tuning and "E A D G B E" not in tab.tuning %}
+        Tuning: {{ tab.tuning }}<br/>
     {% endif %}
-    Difficulty: {{ tab.difficulty }}<br>
-    Capo: 
+    <!--Difficulty: {{ tab.difficulty }}<br>-->
     {% if tab.capo %}
-        {{ tab.capo -}} th fret
-    {% else %}
-        no capo
+        Capo: 
+        {{ tab.capo -}} th fret<br/>
     {% endif %}
-    </br>
-    
-    
-    <div class="form-check form-switch autoscroll">
-      <input class="form-check-input" type="checkbox" role="switch" id="checkbox_autoscroll" />
-      <label class="form-check-label" for="checkbox_autoscroll">Autoscroll</label>
-    </div>
+
+    <!--
     <div class="form-check form-switch autoscroll">
       <input class="form-check-input" type="checkbox" role="switch" id="checkbox_view_chords"/>
       <label class="form-check-label" for="checkbox_view_chords">Show Chord Visualization</label>
     </div>
-    <button type="button" class="btn btn-primary autoscroll" onclick="scroll_timeout-=50" >+</button>
-    <button type="button" class="btn btn-primary autoscroll" onclick="scroll_timeout+=50" >-</button>
-    <i id="dark_mode" class="fa fa-adjust fa-fw"></i>
-    <i class="fa fa--regular fa-star favorite"></i>
+    -->
 
-    <div id="transpose">
-        <span>Transpose</span>
-        Current: <span class="current">0</span>
+    <hr class="border border-secondary"/>
+
+    <div class="form-check form-switch autoscroll">
+        <button type="button" class="btn btn-primary autoscroll" onclick="scroll_timeout-=50" >+</button>
+        <button type="button" class="btn btn-primary autoscroll" onclick="scroll_timeout+=50" >-</button>
+        <input class="form-check-input" type="checkbox" role="switch" id="checkbox_autoscroll" />
+        <label class="form-check-label" for="checkbox_autoscroll">Autoscroll</label>
+      </div>
+
+
+    <div id="transpose" style="margin-top: 8px; ">
         <button class="btn btn-primary minus">-</button>
         <button class="btn btn-primary plus">+</button>
+        <span>Transpose</span> <span style="font-weight: bold" class="current">0</span>
     </div>
 
-    
     <hr class="border border-primary"/>
+
     <div id="chordVisuals" style="display: none;">
         <div class="d-grid" style="grid-gap: 3rem; grid-template-columns: repeat(auto-fill, minmax(min(100px, 100%), 1fr));">
             {% for chord in tab.chords %}
@@ -141,8 +143,6 @@
     $(document).ready(function () {
         get_favorites().then(function(data) {
             var favorites = JSON.parse(data);
-            console.log('SUPPE');
-            console.log(favorites);
 
             $.each(favorites, function (index, song) {
                 var added_at = "";
@@ -223,6 +223,7 @@
 </script>
 
 {% else %}
+
 <script>
     // Add sorting to the table
     // taken from https://stackoverflow.com/a/70024272
