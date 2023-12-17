@@ -176,6 +176,8 @@ def ug_tab(url_path: str):
     s = SongDetail(data)
     try:
         s.chords, s.fingers_for_strings = get_chords(s)
+    except:
+        print("fail")
     #print(json.dumps(data, indent=4))
     #results = data['store']['page']['data']['results']
     #breakpoint()
