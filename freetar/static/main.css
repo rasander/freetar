@@ -10,7 +10,12 @@
   padding-right: 1ch;
 }
 
-#results[data-favs="True"] .col.rating, #results[data-favs="True"] .col.type {
+#results[data-favs="True"] .col.rating, #results[data-favs="True"] .col.type, #results[data-favs="True"] .col.favorite {
+  display: none;
+
+}
+
+#results[data-search="True"] .col.added {
   display: none;
 
 }
