@@ -9,3 +9,8 @@
 .nav li {
   padding-right: 1ch;
 }
+
+#results[data-favs="True"] .col.rating, #results[data-favs="True"] .col.type {
+  display: none;
+
+}

@@ -9,7 +9,8 @@ favs_data_file = "/app/data/favs.json"
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return app.redirect("/favs",code=302)
+#    return render_template("index.html")
 
 
 @app.route("/search")
@@ -41,6 +42,7 @@ def show_tab2(tabid: int):
                            title=f"{tab.artist_name} - {tab.song_name}")
 
 
+@app.route("/")
 @app.route("/favs")
 def show_favs():
     return render_template("index.html",

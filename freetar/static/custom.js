@@ -15,7 +15,6 @@ function store_favorites(data) {
     return $.ajax({
         method: 'POST',
         url: favoritesApi,
-        //data
         data: data,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
