@@ -1,16 +1,43 @@
 scroll_timeout = 500;
 do_scroll = true;
 
-function colorize_favs() {
-    // make every entry yellow if we faved it before
-    favorites = JSON.parse(localStorage.getItem("favorites")) || {};
 
-    $("#results tr").each(function () {
-        var tab_url = $(this).find(".song").find("a").attr("href");
-        if (favorites[tab_url] != undefined) {
-            $(this).find(".favorite").css("color", "#ffae00");
-        }
+const favoritesApi = '/api/favs';
+
+function get_favorites() {
+    return $.ajax({
+        method: 'GET',
+        url: favoritesApi
     });
+}
+
+function store_favorites(data) {
+    return $.ajax({
+        method: 'POST',
+        url: favoritesApi,
+        //data
+        data: data,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+    });
+}
+
+
+
+function colorize_favs() {
+    //favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+
+    // make every entry yellow if we faved it before
+    get_favorites().then(function(data) {
+        var favorites = JSON.parse(data);
+        $("#results tr").each(function () {
+            var tab_url = $(this).find(".song").find("a").attr("href");
+            if (favorites[tab_url] != undefined) {
+                $(this).find(".favorite").css("color", "#ffae00");
+            }
+        });
+    });
+
 }
 
 function initialise_transpose() {

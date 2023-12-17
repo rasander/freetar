@@ -138,9 +138,12 @@
 
 <script>
     $(document).ready(function () {
-        favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+        get_favorites().then(function(data) {
+            var favorites = JSON.parse(data);
+            console.log('SUPPE');
+            console.log(favorites);
 
-        $.each(favorites, function (index, song) {
+            $.each(favorites, function (index, song) {
             $('#results').append(
                 '<tr>' +
                 '<td>' + song.artist_name + '</td>' +
@@ -151,9 +154,11 @@
                 '<td>' + song.type + '</td>' +
                 '<td><i class="fa fa--regular fa-star favorite"></i></td>' +
                 '</tr>');
+            });
+
+            colorize_favs();
         });
 
-        colorize_favs();
     });
 
 
@@ -166,35 +171,43 @@
 <script>
     $(document).ready(function () {
 
-        favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-        if (window.location.pathname in favorites) {
-            console.log("True!");
-            $(".favorite").css("color", "#ffae00");
-        }
+    //    favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+        get_favorites().then(function(data) {
+            var favorites = JSON.parse(data);
+            if (window.location.pathname in favorites) {
+                console.log("True!");
+                $(".favorite").css("color", "#ffae00");
+            }
+        });
 
     });
 
     $(".favorite").click(function () {
         console.log("fav2 was clicked");
-        favorites = JSON.parse(localStorage.getItem("favorites")) || {};
 
-        tab_url = window.location.pathname;
-        if (tab_url in favorites) {
-            delete favorites[tab_url];
-            $(".favorite").css("color", "#000000");
-        } else {
-            var fav = new Map();
-            fav["artist_name"] = "{{ tab.artist_name }}";
-            fav["tab_url"] = window.location.pathname;
-            fav["song"] = "{{ tab.song_name }}";
-            fav["type"] = "{{ tab._type }}";
-            fav["rating"] = "{{ tab.rating }}";
+        //favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+        get_favorites().then(function(data) {
+            var favorites = JSON.parse(data);
 
-            favorites[fav["tab_url"]] = fav;
-            $(".favorite").css("color", "#ffae00");
-        }
+            tab_url = window.location.pathname;
+            if (tab_url in favorites) {
+                delete favorites[tab_url];
+                $(".favorite").css("color", "#000000");
+            } else {
+                var fav = new Map();
+                fav["artist_name"] = "{{ tab.artist_name }}";
+                fav["tab_url"] = window.location.pathname;
+                fav["song"] = "{{ tab.song_name }}";
+                fav["type"] = "{{ tab._type }}";
+                fav["rating"] = "{{ tab.rating }}";
 
-        localStorage.setItem("favorites", JSON.stringify(favorites));
+                favorites[fav["tab_url"]] = fav;
+                $(".favorite").css("color", "#ffae00");
+            }
+
+            //localStorage.setItem("favorites", JSON.stringify(favorites));
+            store_favorites(JSON.stringify(favorites));
+        });
     });
 </script>
 

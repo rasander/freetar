@@ -8,6 +8,9 @@ from dataclasses import dataclass, field
 
 #session = requests.Session()
 
+headers = {
+  'User-Agent': 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+}
 
 @dataclass
 class SearchResult:
@@ -87,7 +90,7 @@ class SongDetail():
 
 
 def ug_search(value: str):
-    resp = requests.get(f"https://www.ultimate-guitar.com/search.php?search_type=title&value={quote(value)}")
+    resp = requests.get(f"https://www.ultimate-guitar.com/search.php?search_type=title&value={quote(value)}", headers)
     bs = BeautifulSoup(resp.text, 'html.parser')
     # data can be None
     data = bs.find("div", {"class": "js-store"})
@@ -161,7 +164,7 @@ def get_chords(s: SongDetail):
 
 def ug_tab(url_path: str):
     #resp = requests.get("https://tabs.ultimate-guitar.com/tab/rise-against/swing-life-away-chords-262724")
-    resp = requests.get("https://tabs.ultimate-guitar.com/tab/" + url_path)
+    resp = requests.get("https://tabs.ultimate-guitar.com/tab/" + url_path, headers)
     #with open("/home/kmille/Downloads/debug.html", "w") as f:
     #    f.write(resp.text)
     bs = BeautifulSoup(resp.text, 'html.parser')

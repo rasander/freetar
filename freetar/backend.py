@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 from ug import ug_search, ug_tab
 import waitress
 
 app = Flask(__name__)
 
+favs_data_file = "/app/data/favs.json"
 
 @app.route("/")
 def index():
@@ -45,6 +46,37 @@ def show_favs():
     return render_template("index.html",
                            title="Freetar - Favorites",
                            favs=True)
+
+
+@app.route("/api/favs", methods=['GET'])
+def api_get_favs():
+    app.logger.debug("api_get_favs: start")
+    try:
+        with open(favs_data_file) as f:
+            content = f.read()
+            #app.logger.debug("api_get_favs: ", str(content))
+            return content, 200
+    except Exception as e:
+        app.logger.error("api_get_favs: Exception occurred", e)
+        return "", 500
+
+
+
+@app.route("/api/favs", methods=['POST'])
+def api_store_favs():
+    try:
+        
+        #json_data = json.loads(request.data)
+        content = request.data.decode("utf-8")
+
+        f = open(favs_data_file, "w")
+        f.write(content)
+        f.close()
+        return "", 204
+    except:
+        app.logger.error("api_store_favs: Exception occurred", e)
+        return "", 500
+
 
 
 def main():
