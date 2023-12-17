@@ -174,7 +174,8 @@ def ug_tab(url_path: str):
     data = data.attrs['data-content']
     data = json.loads(data)
     s = SongDetail(data)
-    s.chords, s.fingers_for_strings = get_chords(s)
+    try:
+        s.chords, s.fingers_for_strings = get_chords(s)
     #print(json.dumps(data, indent=4))
     #results = data['store']['page']['data']['results']
     #breakpoint()
